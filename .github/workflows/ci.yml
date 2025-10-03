@@ -17,7 +17,7 @@ jobs:
           deno-version: v2.x
           cache: true
 
-      - name: Deno lint
+      - name: lint
         run: deno lint
 
   fmt:
@@ -33,7 +33,7 @@ jobs:
           deno-version: v2.x
           cache: true
 
-      - name: Deno fmt
+      - name: fmt
         run: deno fmt --check
 
   test:
@@ -49,5 +49,5 @@ jobs:
           deno-version: v2.x
           cache: true
 
-      - name: Deno test
+      - name: test
         run: deno test --allow-read --allow-write
