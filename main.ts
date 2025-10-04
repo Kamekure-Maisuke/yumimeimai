@@ -1,19 +1,8 @@
-import { zip } from "./lib.ts";
+import { markdownToHtml } from "./lib.ts";
 
-if (import.meta.main) {
-  const args = Deno.args;
-
-  if (args.length < 2) {
-    console.log(
-      "使い方: deno run --allow-read --allow-write main.ts <出力zipファイル> <ファイル1> [ファイル2] ...",
-    );
-    console.log(
-      "例: deno run --allow-read --allow-write main.ts output.zip file1.txt file2.txt",
-    );
-    Deno.exit(1);
-  }
-
-  const [outputPath, ...inputPaths] = args;
-  await zip(inputPaths, outputPath);
-  console.log(`✓ ${outputPath} を作成しました`);
+const html = await markdownToHtml("README.md");
+if (html === false) {
+  console.log("マークダウンファイルを指定してください。");
+  Deno.exit(1);
 }
+await Deno.writeTextFile("sample.html", html);
