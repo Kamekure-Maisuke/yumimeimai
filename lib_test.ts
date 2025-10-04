@@ -1,5 +1,5 @@
-import { assertEquals } from "@std/assert";
-import { unzip, zip } from "./lib.ts";
+import { assertEquals, assertStringIncludes } from "@std/assert";
+import { markdownToHtml, unzip, zip } from "./lib.ts";
 
 Deno.test({
   name: "zip creates archive from files",
@@ -39,5 +39,27 @@ Deno.test({
     await Deno.remove(testFile);
     await Deno.remove(zipPath);
     await Deno.remove(outputDir, { recursive: true });
+  },
+});
+
+Deno.test({
+  name: "markdownToHtml converts markdown to HTML",
+  sanitizeResources: false,
+  sanitizeOps: false,
+  async fn() {
+    const mdFile = await Deno.makeTempFile({ suffix: ".md" });
+    await Deno.writeTextFile(mdFile, "# Hello\n\nThis is a **test**.");
+
+    const html = await markdownToHtml(mdFile);
+
+    assertEquals(typeof html, "string");
+    assertStringIncludes(html as string, "<!DOCTYPE html>");
+    assertStringIncludes(html as string, '<html lang="ja">');
+    assertStringIncludes(html as string, "markdown-body");
+    assertStringIncludes(html as string, "<h1");
+    assertStringIncludes(html as string, "Hello");
+    assertStringIncludes(html as string, "<strong>test</strong>");
+
+    await Deno.remove(mdFile);
   },
 });
